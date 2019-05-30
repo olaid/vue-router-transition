@@ -3,12 +3,13 @@
     <h1>This is an home page</h1>
     <p>
       <button @click="doAdd">追加</button>
-      <button @click="randomaize">シャッフル</button>
+      <button @click="randomize">シャッフル</button>
       <button @click="current=1">すべて</button>
       <button @click="current=n" v-for="n in [3,5,6]" :key="n">
         {{n}}の倍数
       </button>
     </p>
+    <draggable>
     <transition-group tag="ul" class="list"
       @before-enter="beforeEnter"
       @after-enter="afterEnter"
@@ -19,11 +20,17 @@
         class="item"
         @click="doRemove(item)">{{ item }}</li>
     </transition-group>
+    </draggable>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 export default {
+  components: {
+    draggable,
+  },
   data() {
     return {
       addEnter: false,
@@ -48,7 +55,7 @@ export default {
     doRemove(item) {
       this.list.splice(this.list.indexOf(item), 1)
     },
-    randomaize(){
+    randomize(){
       this.current=1
       for(var y =0 ; y < this.list.length;y++){
         var x = this.list[0]

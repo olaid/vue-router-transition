@@ -8,6 +8,7 @@
         {{n}}の倍数
       </button>
     </p>
+    <draggable>
     <transition-group tag="ul" class="list"
       @before-enter="beforeEnter"
       @after-enter="afterEnter"
@@ -18,11 +19,17 @@
         class="item"
         @click="doRemove(item)">{{ item }}</li>
     </transition-group>
+    </draggable>
   </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable';
+
 export default {
+  components: {
+    draggable,
+  },
   data() {
     return {
       addEnter: false,
