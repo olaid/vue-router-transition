@@ -4,12 +4,23 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <transition name="router-transition" >
+      <router-view/>
+    </transition>
   </div>
 </template>
 
 <style>
+@import "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css";
+
+body {
+background: #eee;
+}
+
 #app {
+margin: 0 auto;
+max-width: 1000px;
+background: #fff;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -28,4 +39,44 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+.page {
+  position: fixed; 
+  right: 0;
+  left: 0;
+  width: inherit;
+  padding: 0 50px;
+}
+
+.router-transition-enter-active {
+animation: fadeIn 1s;
+animation-delay: .5s;
+opacity: 0;
+}
+
+@keyframes fadeIn {
+from {
+transform: translateY(-20px);
+opacity: 0;
+}
+to {
+transform: translateY(0);
+opacity: 1;
+}
+}
+
+.router-transition-leave-active {
+animation: fadeOut 1s;
+}
+
+@keyframes fadeOut {
+from {
+transform: translateY(0);
+}
+to {
+transform: translateY(-20px);
+opacity: 0;
+}
+}
+
 </style>
