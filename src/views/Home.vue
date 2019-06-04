@@ -3,28 +3,31 @@
     <h1>This is an home page</h1>
     <p>
       <button @click="doAdd">追加</button>
+      <button @click="sort">整列</button>
       <button @click="randomize">シャッフル</button>
       <button @click="current=1">すべて</button>
-      <button @click="current=n" v-for="n in [3,5,6]" :key="n">
+      <button @click="current=n" v-for="n in [2,3]" :key="n">
         {{n}}の倍数
       </button>
     </p>
-    <draggable>
-    <transition-group tag="ul" class="list"
-      @before-enter="beforeEnter"
-      @after-enter="afterEnter"
-      @enter-cancelled="afterEnter">å
-      <li v-for="(item, index) in filteredList"
-        :data-index="index"
-        :key="item"
-        class="item"
-        @click="doRemove(item)">{{ item }}</li>
-    </transition-group>
+    <draggable v-model="filteredList">
+      <transition-group tag="ul" class="list"
+        @before-enter="beforeEnter"
+        @after-enter="afterEnter"
+        @enter-cancelled="afterEnter">
+        <li v-for="(item, index) in filteredList"
+          :data-index="index"
+          :key="item"
+          class="item"
+          @click="doRemove(item)">{{ item }}</li>
+      </transition-group>
     </draggable>
   </div>
 </template>
 
 <script>
+//https://cr-vue.mio3io.com/examples/delay-transition.html
+//https://taroken.org/vuejs-transition-router/
 import draggable from 'vuedraggable';
 
 export default {
@@ -39,8 +42,13 @@ export default {
     }
   },
   computed: {
-    filteredList() {
-      return this.list.filter(el => el % this.current === 0)
+    filteredList:{
+      get: function() {
+        return this.list.filter(el => el % this.current === 0)
+      },
+      set: function (newValue) {
+        this.list = newValue
+      }
     }
   },
   methods: {
@@ -55,12 +63,25 @@ export default {
     doRemove(item) {
       this.list.splice(this.list.indexOf(item), 1)
     },
+    sort(){
+      this.current=1
+      for(var x =0 ; x < this.list.length;x++){
+        for(var y =0 ; y < this.list.length;y++){
+          if(this.list[x] < this.list[y]){
+            var xnum = this.list[x]
+            this.list.splice(x, 1, this.list[y])
+            this.list.splice(y, 1, xnum)
+          }
+        }
+      }
+    },
     randomize(){
       this.current=1
       for(var y =0 ; y < this.list.length;y++){
-        var x = this.list[0]
         const index = Math.floor(Math.random() * this.list.length)
-        this.list.splice(0, 1, this.list[index])
+        const indexx = Math.floor(Math.random() * this.list.length)
+        var x = this.list[indexx]
+        this.list.splice(indexx, 1, this.list[index])
         this.list.splice(index, 1, x)
       }
     },

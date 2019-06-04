@@ -4,11 +4,10 @@
     <p>
       <button @click="doAdd">追加</button>
       <button @click="current=1">すべて</button>
-      <button @click="current=n" v-for="n in [3,5,6]" :key="n">
+      <button @click="current=n" v-for="n in [3,5]" :key="n">
         {{n}}の倍数
       </button>
     </p>
-    <draggable>
     <transition-group tag="ul" class="list"
       @before-enter="beforeEnter"
       @after-enter="afterEnter"
@@ -19,17 +18,11 @@
         class="item"
         @click="doRemove(item)">{{ item }}</li>
     </transition-group>
-    </draggable>
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable';
-
 export default {
-  components: {
-    draggable,
-  },
   data() {
     return {
       addEnter: false,
@@ -47,7 +40,7 @@ export default {
       // 追加ならフラグを立てる
       this.addEnter = true
       const newNumber = Math.max.apply(null, this.list) + 1
-      const index = (this.list.length + 1)
+      const index = Math.floor(Math.random() * (this.list.length + 1))
       this.list.splice(index, 0, newNumber)
     },
     doRemove(item) {
