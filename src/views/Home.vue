@@ -1,6 +1,6 @@
 <template>
   <div class="home page">
-    <h1>This is an home page</h1>
+    <h1>vue toy</h1>
     <p>
       <button @click="doAdd">追加</button>
       <button @click="sort">整列</button>
@@ -87,6 +87,8 @@ export default {
     },
     // トランジション開始でインデックス*100ms分のディレイを付与
     beforeEnter(el) {
+      //倍数表示ボタンの切り替えでは要素が一気に追加されるため段階的にディレイを挿入
+      //追加は遅くする必要がないためそのまま挿入
       this.$nextTick(() => {
         if (!this.addEnter) {
           // 追加でなければディレイを付与

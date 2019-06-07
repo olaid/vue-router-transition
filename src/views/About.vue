@@ -1,12 +1,10 @@
 <template>
   <div class="about page">
-    <h1>This is an about page</h1>
+    <h1 v-if="is_started">click in order of number</h1>
+    <h1 v-else>{{message}}</h1>
     <p>
-      <button @click="doAdd">追加</button>
-      <button @click="current=1">すべて</button>
-      <button @click="current=n" v-for="n in [3,5]" :key="n">
-        {{n}}の倍数
-      </button>
+      <input type=number v-model="number"></input>
+      <button @click="start">スタート</button>
     </p>
     <transition-group tag="ul" class="list"
       @before-enter="beforeEnter"
@@ -16,6 +14,7 @@
         :data-index="index"
         :key="item"
         class="item"
+        :style="{color: font_color}"
         @click="doRemove(item)">{{ item }}</li>
     </transition-group>
   </div>
@@ -25,29 +24,70 @@
 export default {
   data() {
     return {
-      addEnter: false,
-      current: 1,
-      list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      is_started: false,
+      number: 10,
+      list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      memory: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      font_color: "black",
+      message: "memory game"
     }
   },
   computed: {
     filteredList() {
-      return this.list.filter(el => el % this.current === 0)
+      return this.list
     }
   },
   methods: {
-    doAdd() {
+    start() {
+      this.fontcolorChange("black")
+      this.is_started = false
+      this.message = "remember the number"
+      var white = function(){
+        this.list = []
+      } 
       // 追加ならフラグを立てる
-      this.addEnter = true
-      const newNumber = Math.max.apply(null, this.list) + 1
-      const index = Math.floor(Math.random() * (this.list.length + 1))
-      this.list.splice(index, 0, newNumber)
+      this.list = []
+      for( x = 1; x <= this.number; x++ ){
+        this.list.splice(x-1, 0, x)
+      }
+      for(var y =0 ; y < this.list.length;y++){
+        const index = Math.floor(Math.random() * this.list.length)
+        const indexx = Math.floor(Math.random() * this.list.length)
+        var x = this.list[indexx]
+        this.list.splice(indexx, 1, this.list[index])
+        this.list.splice(index, 1, x)
+      }
+      setTimeout(this.fontcolorChange,3000,"transparent")
+      setTimeout(this.started,5000)
+      
+    },
+    fontcolorChange(color) {
+      this.font_color= color
+    },
+    started(){
+      this.is_started = true
     },
     doRemove(item) {
-      this.list.splice(this.list.indexOf(item), 1)
+      if(!this.is_started){
+        return 0
+      }
+      if(item == Math.min.apply(null, this.list)){
+        this.list.splice(this.list.indexOf(item), 1)
+      }
+      else {
+        this.message = "miss!restart!"
+        this.is_started = false
+        this.font_color= "black"
+        setTimeout(this.start,3000)
+      }
+      if(!this.list.length){
+        this.is_started = false
+        this.message = "congratulations!!!"
+      }
     },
     // トランジション開始でインデックス*100ms分のディレイを付与
     beforeEnter(el) {
+      this.font_color= "black"
       this.$nextTick(() => {
         if (!this.addEnter) {
           // 追加でなければディレイを付与
@@ -65,5 +105,5 @@ export default {
   }
 }
 </script>
-
-<style src="./style.css" scoped></style>
+<style src="./style.css" scoped>
+</style>
